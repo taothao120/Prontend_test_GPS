@@ -23,6 +23,7 @@ function showUserLocation() {
                 .setLngLat(userLocation)
                 .addTo(map);
             map.flyTo({center: userLocation});
+            document.getElementById('show-user-location').innerText = "Longitude: " + position.coords.longitude.toFixed(3) + ", Latitude: " + position.coords.latitude.toFixed(3);
         });
     } else {
         alert('Geolocation is not supported by this browser.');
