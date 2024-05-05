@@ -15,6 +15,20 @@ function showPosition(position) {
     var distanceValue = calculateDistance(latitude1, longitude1, latitude2, longitude2);
     userLocation.innerText = distanceValue + " far from you.";
 }
+function showUserLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            var userLocation = [position.coords.longitude, position.coords.latitude];
+            new mapboxgl.Marker()
+                .setLngLat(userLocation)
+                .addTo(map);
+            map.flyTo({center: userLocation});
+        });
+    } else {
+        alert('Geolocation is not supported by this browser.');
+    }
+}
+
 function resetAllData() {
     var confirmReload = confirm("Warning! All previous data will be deleted.\nAre you sure you want to Reset?");
     if (confirmReload) {
@@ -110,37 +124,19 @@ map.on('load', function () {
     var latLabel = document.getElementById('lat-label');
     var addressLabel = document.getElementById('address-label');
     var distanceLabel = document.getElementById('distance-label');
-    var speedLabel = document.getElementById('speed-label');
     var directionLabel = document.getElementById('direction-label');
-    var altitudeLabel = document.getElementById('altitude-label');
-    var degreeLabel = document.getElementById('degree-label');
-    var hdopLabel = document.getElementById('hdop-label');
-    var satellitesLabel = document.getElementById('satellites-label');
     var dateLabel = document.getElementById('date-label');
-    var time1Label = document.getElementById('time1-label');
-    var time2Label = document.getElementById('time2-label');
+    var timeLabel = document.getElementById('time-label');
     ref.on("value", function (snapshot) {
-        var data = snapshot.val()['GPS-Data'];
+        var data = snapshot.val()['GPS_Data'];
         var lat = data.Latitude;
         var lng = data.Longitude;
-        var altitude = data.Altitude;
         var date = data.Date;
-        var degree = data.Degree;
         var direction = data.Direction;
-        var hdop = data.HDoP;
-        var speed = data.Speed;
-        var time1 = data.UTC_Time;
-        var time2 = data.Local_Time;
-        var satellites = data.Satellites;
-        speedLabel.innerText = speed === "" ? "Not Available" : `${speed} km/h`;
+        var time = data.UTC_Time;
         directionLabel.innerText = direction === "" ? "Not Available" : `Moving towards ${getDirectionName(direction)}`;
-        altitudeLabel.innerText = altitude === "" ? "Not Available" : `${altitude} meters`;
-        degreeLabel.innerText = degree === "" ? "Not Available" : degree;
-        hdopLabel.innerText = hdop === "" ? "Not Available" : hdop;
-        satellitesLabel.innerText = satellites === "" ? "Not Available" : satellites;
         dateLabel.innerText = date === "" ? "Not Available" : date;
-        time1Label.innerText = time1 === "" ? "Not Available" : time1;
-        time2Label.innerText = time2 === "" ? "Not Available" : time2;
+        timeLabel.innerText = time === "" ? "Not Available" : time;
         lngLabel.innerText = lng === "" ? "Not Available" : lng;
         latLabel.innerText = lat === "" ? "Not Available" : lat;
         if (lineCoordinates.length > 0) {
